@@ -34,6 +34,8 @@ public class MainActivity extends ActionBarActivity {
 
         mShareActionProvider.setShareIntent((createShareCatIntent()));
 
+        //commenyt
+
         return true;
     }
 
