@@ -1,14 +1,19 @@
 package com.whatscat.drpanda.whatscat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 //import android.widget.ShareActionProvider;
-import android.widget.TextView;
 import android.support.v7.widget.ShareActionProvider;
+import android.net.Uri;
+
+import java.io.ByteArrayOutputStream;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -34,8 +39,6 @@ public class MainActivity extends ActionBarActivity {
 
         mShareActionProvider.setShareIntent((createShareCatIntent()));
 
-        //commenyt
-
         return true;
     }
 
@@ -47,27 +50,34 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_item_share) {
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            //shareIntent.setType("text/plain");
-            shareIntent.setType("image/jpeg");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, CAT_HASHTAG);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, "http://www.vetprofessionals.com/catprofessional/images/home-cat.jpg");
+            Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.sad_cat);
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(), b, "Title", null);
+            Uri imageUri = Uri.parse(path);
 
-            startActivity(shareIntent);
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/jpeg");
+            share.putExtra(Intent.EXTRA_STREAM, imageUri);
+            startActivity(Intent.createChooser(share, "Select"));
+
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private Intent createShareCatIntent() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        //shareIntent.setType("text/plain");
-        shareIntent.setType("image/jpeg");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, CAT_HASHTAG);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, "http://www.vetprofessionals.com/catprofessional/images/home-cat.jpg");
 
+        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.sad_cat);
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), b, "Title", null);
+        Uri imageUri = Uri.parse(path);
 
-        return shareIntent;
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+        share.putExtra(Intent.EXTRA_STREAM, imageUri);
+
+        return share;
     }
 }
