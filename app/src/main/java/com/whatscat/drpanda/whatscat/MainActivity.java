@@ -1,19 +1,23 @@
 package com.whatscat.drpanda.whatscat;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.Menu;
 import android.view.MenuItem;
-//import android.widget.ShareActionProvider;
-import android.support.v7.widget.ShareActionProvider;
-import android.net.Uri;
 
 import java.io.ByteArrayOutputStream;
+
+//import android.widget.ShareActionProvider;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -63,20 +67,36 @@ public class MainActivity extends ActionBarActivity {
 
         }
 
+        if (id == R.id.menu_item_bookmark) {
+
+        }
+
+        if (id == R.id.menu_item_show_bookmarks) {
+            FragmentManager fragmentManager = getFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(fragmentManager.findFragmentById(R.id.fragment));
+            transaction.add(fragmentManager.findFragmentById(R.id.fragment_bookmarks), "tag");
+//            transaction.replace(R.id.fragment, new BookmarksFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
+            String state = Environment.getExternalStorageState();
+//            setContentView(R.id.fragment_bookmarks);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     private Intent createShareCatIntent() {
 
-        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.sad_cat);
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), b, "Title", null);
-        Uri imageUri = Uri.parse(path);
+//        Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.sad_cat);
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//        String path = MediaStore.Images.Media.insertImage(getContentResolver(), b, "Title", null);
+//        Uri imageUri = Uri.parse(path);
 
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
-        share.putExtra(Intent.EXTRA_STREAM, imageUri);
+        share.putExtra(Intent.EXTRA_STREAM, ""); //imageUri);
 
         return share;
     }
